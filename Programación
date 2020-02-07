@@ -1,0 +1,126 @@
+#pragma config BOR4V = BOR40V   // Brown-out Reset Selection bit (Brown-out Reset set to 4.0V)
+#pragma config WRT = OFF        // Flash Program Memory Self Write Enable bits (Write protection off)
+
+// #pragma config statements should precede project file includes.
+// Use project enums instead of #define for ON and OFF.
+
+#include <xc.h>
+
+void setup (void);
+void display (void);
+void delay (void);
+
+
+int cont =0;
+int cont2=0;
+int i = 0;
+int j = 0;
+int AR = 0;
+int AR1 =0;
+int A1 = 0;
+int A2 = 0;
+
+void setup (void) {
+    TRISA = 0x00;
+    TRISB = 0x00;
+    TRISC = 0x49;
+    TRISD = 0x00;
+    PORTD = 0xFF;
+    PORTA = 0x00;
+    PORTB = 0x00;
+    PORTC = 0x00;
+    ANSEL = 0x00;
+    ANSELH = 0x00;
+    return;
+}
+
+void display(void){
+    if (PORTBbits.RB0 == 1){
+        PORTD = 0xB0;
+        PORTCbits.RC2 = 1;
+        PORTCbits.RC4 = 0;
+        PORTCbits.RC5 = 0;
+        delay();
+        PORTD = 0xA4;
+        PORTCbits.RC2 = 0;
+        PORTCbits.RC4 = 0;
+        PORTCbits.RC5 = 1;
+        delay();
+        PORTD = 0xF9;
+        PORTCbits.RC2 = 0;
+        PORTCbits.RC4 = 1;
+        PORTCbits.RC5 = 0;
+        delay();
+        PORTD = 0xC0;
+        PORTCbits.RC2 = 1;
+        PORTCbits.RC4 = 1;
+        PORTCbits.RC5 = 1;
+    }
+    return;
+}
+
+void delay(void){
+    for (i = 0; i <= 255; i ++){
+        cont += cont;
+        for (j = 0; j <= 100; j ++){
+            cont2 += cont2;
+        }
+    }
+}
+
+void main(void){
+    setup();
+    display();
+    while (PORTD == 0XC0){
+        if (PORTCbits.RC0 == 1){
+            AR=1;
+            if (PORTCbits.RC0 == 0 && AR==1 && PORTA !=0x00 && PORTA !=0x80){
+                A1=A1 *= 2;
+                PORTA = A1; 
+                AR=0;
+            }
+        }
+        else if (PORTA == 0x00){
+            AR=1;
+            if (PORTCbits.RC2 == 0 && AR ==1){
+                PORTA = 0x01;
+                AR =0;
+            }
+                    
+        }
+        else if (PORTA == 0x80 && PORTCbits.RC2==1){
+            PORTA = 0;
+            PORTD = 0xF9;
+            PORTCbits.RC1 = 1;
+            delay();
+        }
+        
+        
+     if (PORTCbits.RC6 == 1){
+          AR1=1;
+          if (PORTCbits.RC6 == 0 && AR1==1 && PORTB !=0x00 && PORTB !=0x80 ){
+              A2=A2 *= 2;
+              PORTB = A2; 
+              AR1=0;
+        }
+    }
+      else if (PORTD ==0x00){
+          AR=1;
+          if (PORTCbits.RC6 == 0 && AR1 ==1){
+              PORTB = 0x01;
+              AR1 = 0;
+            }
+                    
+        }
+      else if (PORTB == 0x80 && PORTCbits.RC6==1){
+          PORTB = 0;
+          PORTD = 0xA4;
+          PORTCbits.RC7 = 1;
+          delay();
+        }
+        
+        
+        
+    }
+    return;
+}
